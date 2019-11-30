@@ -18,6 +18,7 @@ services:
       - db
     volumes:
       - ./database/.:/opt/app
+      - ./data/.:/opt/data
       - /opt/app/node_modules
     environment:
       DB_CONNECTION_STRING: "postgres://mtg:mtg_pass@db:5432/mtg_local?charset=utf8"
