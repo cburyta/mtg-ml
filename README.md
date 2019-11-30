@@ -4,7 +4,7 @@ Uses Knex as a tool to setup schema with `knex migrate`. Use `knex seed` scripts
 
 ## Getting Started
 
-First download the [scryfall-all-cards.json]() and place it within `./data`.
+First download the [scryfall-all-cards.json](https://archive.scryfall.com/json/scryfall-all-cards.json) and place it within `./data`.
 
 Then run the seed script to insert data from the JSON into Postgres.
 
