@@ -22,9 +22,3 @@ services:
       - /opt/app/node_modules
     environment:
       DB_CONNECTION_STRING: "postgres://mtg:mtg_pass@db:5432/mtg_local?charset=utf8"
-
-
-#  pyspark:
-#    image: "jupyter/pyspark-notebook"
-#    ports:
-#      - '8888:8888'
