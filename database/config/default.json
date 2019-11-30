@@ -1,0 +1,9 @@
+{
+  "db": {
+    "connectionString": "postgres://mtg:mtg_pass@db:5432/mtg_local?charset=utf8",
+    "pool": {
+      "min": 1,
+      "max": 1
+    }
+  }
+}

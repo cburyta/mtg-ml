@@ -1,0 +1,9 @@
+{
+  "db": {
+    "connectionString": "DB_CONNECTION_STRING",
+    "pool": {
+      "min": "DB_POOL_MIN",
+      "max": "DB_POOL_MAX"
+    }
+  }
+}

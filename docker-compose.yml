@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  db:
+    image: "postgres:11-alpine"
+    environment:
+      POSTGRES_PASSWORD: mtg_pass
+      POSTGRES_USER: mtg
+      POSTGRES_DB: mtg_local
+    ports:
+      - '5432:5432'
+
+  # database migrations and seed data
+  db-util:
+    build: database/.
+    command: 'yarn run migrate'
+    depends_on:
+      - db
+    volumes:
+      - ./database/.:/opt/app
+      - /opt/app/node_modules
+    environment:
+      DB_CONNECTION_STRING: "postgres://mtg:mtg_pass@db:5432/mtg_local?charset=utf8"
+
+
+#  pyspark:
+#    image: "jupyter/pyspark-notebook"
+#    ports:
+#      - '8888:8888'
