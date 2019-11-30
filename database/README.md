@@ -3,6 +3,17 @@
 Database migration, seed, etc. utilities encapsulated in a Docker container. This container is not
 meant to provide a long-running service, rather a one time execution to kickstart or maintain the database.
 
+---
+
+## Reference
+
+- https://www.npmjs.com/package/stream-chain
+- https://www.npmjs.com/package/stream-json
+- https://archive.scryfall.com/json/scryfall-all-cards.json
+- https://scryfall.com/docs/api/bulk-data
+
+---
+
 ## Running
 
 Initial stub database util for DevOps team.

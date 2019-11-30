@@ -16,7 +16,7 @@ exports.seed = async function(knex) {
   let failed = 0;
 
   // Deletes ALL existing entries
-  await knex.raw('TRUNCATE TABLE ?? RESTART IDENTITY CASCADE', 'cards')
+  await knex.raw('TRUNCATE TABLE ?? RESTART IDENTITY CASCADE', 'cards');
 
   const pipeline = chain([
     fs.createReadStream('/opt/data/scryfall-all-cards.json'),
