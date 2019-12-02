@@ -7,6 +7,8 @@ services:
       POSTGRES_PASSWORD: mtg_pass
       POSTGRES_USER: mtg
       POSTGRES_DB: mtg_local
+    expose:
+      - 5432
     ports:
       - '5432:5432'
 
@@ -22,3 +24,15 @@ services:
       - /opt/app/node_modules
     environment:
       DB_CONNECTION_STRING: "postgres://mtg:mtg_pass@db:5432/mtg_local?charset=utf8"
+
+  crawler:
+    build: crawler/.
+    command: 'python hello.py'
+    volumes:
+      - ./crawler/.:/opt/app
+    environment:
+      POSTGRES_HOSTNAME: db
+      POSTGRES_PASSWORD: mtg_pass
+      POSTGRES_USER: mtg
+      POSTGRES_DB: mtg_local
+      DB_CONNECTION_STRING: "postgres://mtg:mtg_pass@db:5432/mtg_local"
