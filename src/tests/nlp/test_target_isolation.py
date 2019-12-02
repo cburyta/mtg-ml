@@ -27,3 +27,13 @@ def test_preprocessed_card_text_has_enemy_creature_target_isolated():
     # assert that we get back a target,effect tuple
     assert split_string[0] == "enemy_creature"
 
+def test_target_category_list():
+    # setup nlp module
+    mtg_nlp = MTGNLP()
+
+    # get categories
+    target_categories = mtg_nlp.get_target_categories()
+
+    # assert target categories
+
+
