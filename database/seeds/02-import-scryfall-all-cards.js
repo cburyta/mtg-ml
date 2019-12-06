@@ -1,3 +1,8 @@
+//
+// Process the data file to import cards into a relational
+// database for our ML scripts.
+//
+
 const {chain}  = require('stream-chain');
 
 const {parser} = require('stream-json');

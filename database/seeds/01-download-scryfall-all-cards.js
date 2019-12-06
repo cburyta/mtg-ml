@@ -1,3 +1,7 @@
+//
+// The scryfall-all-cards.json contains all printings of cards, leverage
+// the oracle_id to identify unique cards.
+//
 const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
