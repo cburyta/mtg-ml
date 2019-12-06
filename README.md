@@ -4,10 +4,10 @@ Uses Knex as a tool to setup schema with `knex migrate`. Use `knex seed` scripts
 
 ## Getting Started
 
-Then run the seed script to insert data from the JSON into Postgres.
+Run the seed script to download and insert data into Postgres.
 
 ```
-docker-compose run --rm db-util yarn seed
+docker-compose run --rm db-util yarn initialize
 ```
 
 ## Database
