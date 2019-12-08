@@ -1,6 +1,7 @@
 version: '3.7'
 
 services:
+  # database service for the app
   db:
     image: "postgres:11-alpine"
     environment:
