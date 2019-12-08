@@ -1,0 +1,7 @@
+version: '3.7'
+
+services:
+  app:
+    build: ./src
+    volumes:
+      - ./src/.:/opt/app
