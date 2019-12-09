@@ -1,4 +1,4 @@
-import MTGNLP from '../mtgnlp'
+from mtg_nlp import MTGNLP
 
 def test_cost_parsing_loyalty():
     # setup nlp module

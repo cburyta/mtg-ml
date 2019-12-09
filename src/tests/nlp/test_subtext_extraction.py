@@ -1,4 +1,4 @@
-import MTGNLP from '../mtgnlp'
+from mtg_nlp import MTGNLP
 
 def test_effect_subtext_extraction():
     # setup nlp module

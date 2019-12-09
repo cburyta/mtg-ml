@@ -1,6 +1,6 @@
-import MTGNLP from '../mtgnlp'
+from mtg_nlp import MTGNLP
 
-def test_preprocessed_card_text_is_separated_into_actions_and_casting_costs:
+def test_preprocessed_card_text_is_separated_into_actions_and_casting_costs():
     # setup nlp module
     mtg_nlp = MTGNLP()
 

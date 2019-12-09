@@ -1,4 +1,4 @@
-import MTGNLP from '../mtgnlp'
+from mtg_nlp import MTGNLP
 
 def test_preprocessed_card_text_has_alternative_effects_isolated():
     # setup nlp module

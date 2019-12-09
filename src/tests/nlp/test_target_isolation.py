@@ -1,4 +1,4 @@
-import MTGNLP from '../mtgnlp'
+from mtg_nlp import MTGNLP
 
 def test_preprocessed_card_text_has_player_self_target_isolated():
     # setup nlp module

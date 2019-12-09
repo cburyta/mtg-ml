@@ -1,3 +1,5 @@
+from mtg_classifier import MTGClassifier
+
 def test_get_card_classifications():
     # setup classifier
     mtg_card_classifer = MTGClassifier()
