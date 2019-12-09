@@ -1,3 +1,19 @@
+from nlp import card_text_parser
+
+def test_preprocessed_card_text_is_separated_into_actions():
+    # setup test string
+    cardtext = "{2}{B}{R}, {T}, Sacrifice Corpus Hauler: Reveal the top five cards of your library. Put all creature cards revealed this way into your hand and the rest on the bottom of your library in any order. \
+    {3}{C}, Exile a creature card from your graveyard: You may put a green creature card from your hand onto the battlefield. \
+    −7: You get an emblem with \"\"{T}: you may search your library for a creature card, put it onto the battlefield, then shuffle your library.\"\""
+
+    # run "separate_actions_and_casting_cost" on our string
+    separated = card_text_parser.get_action_list_from_raw_card_text(cardtext)
+
+    # assert that we get back a list of 2-tuples with "cost" and "description" separated out
+    assert len(separated) == 3
+    assert separated[0] == "{2}{B}{R}, {T}, Sacrifice Corpus Hauler: Reveal the top five cards of your library. Put all creature cards revealed this way into your hand and the rest on the bottom of your library in any order."
+    assert separated[1] == "{3}{C}, Exile a creature card from your graveyard: You may put a green creature card from your hand onto the battlefield."
+    assert separated[2] == "−7: You get an emblem with \"\"{T}: you may search your library for a creature card, put it onto the battlefield, then shuffle your library."
 
 def test_get_cost_and_description_from_action():
     test_action = "{2}{B}{R}, {T}, Sacrifice Corpus Hauler: Reveal the top five cards of your library. Put all creature cards revealed this way into your hand and the rest on the bottom of your library in any order."
