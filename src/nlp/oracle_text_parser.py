@@ -44,7 +44,6 @@ class OracleTextParser:
         cost_tokens = ''.join(cost_tokens)
         cost_tokens = cost_tokens.split(' ')
         for token in cost_tokens:
-            print(token, token.count('{2}'))
             token = token.lower()
             red_cost += token.count('{r}')
             blue_cost += token.count('{u}')
@@ -52,23 +51,15 @@ class OracleTextParser:
             green_cost += token.count('{g}')
             white_cost += token.count('{w}')
             colorless_cost += token.count('{w}')
-            generic_cost += token.count('{10}') * 10 + \
-                token.count('{9}') * 9 + \
-                token.count('{8}') * 8 + \
-                token.count('{7}') * 7 + \
-                token.count('{6}') * 6 + \
-                token.count('{5}') * 5 + \
-                token.count('{4}') * 4 + \
-                token.count('{3}') * 3 + \
-                token.count('{2}') * 2 + \
-                token.count('{1}') * 1
-            life_cost = True if token.count('life') or life_cost else False
-            discard_cost = True if token.count('discard') or discard_cost else False
-            loyalty_cost = True if token.count('−') or loyalty_cost else False
-            sacrifice_cost = True if token.count('sacrifice') or sacrifice_cost else False
-            hybrid_cost = True if token.count('/') or hybrid_cost else False
-            tap_cost = True if token.count('{t}') or tap_cost else False
-            untap_cost = True if token.count('untap') or untap_cost else False
+            for i in range(10):
+                generic_cost += token.count(f'{{{i + 1}}}') * (i + 1)
+            life_cost = token.count('life') or life_cost
+            discard_cost = token.count('discard') or discard_cost
+            loyalty_cost = token.count('−') or loyalty_cost
+            sacrifice_cost = token.count('sacrifice') or sacrifice_cost
+            hybrid_cost = token.count('/') or hybrid_cost
+            tap_cost = token.count('{t}') or tap_cost
+            untap_cost = token.count('untap') or untap_cost
         return {
             'red': red_cost,
             'blue': blue_cost,
@@ -77,13 +68,13 @@ class OracleTextParser:
             'white': white_cost,
             'colorless': colorless_cost,
             'generic': generic_cost,
-            'life': life_cost,
-            'discard': discard_cost,
-            'loyalty': loyalty_cost,
-            'sacrifice': sacrifice_cost,
-            'hybrid': hybrid_cost,
-            'tap': tap_cost,
-            'untap': untap_cost,
+            'life': bool(life_cost),
+            'discard': bool(discard_cost),
+            'loyalty': bool(loyalty_cost),
+            'sacrifice': bool(sacrifice_cost),
+            'hybrid': bool(hybrid_cost),
+            'tap': bool(tap_cost),
+            'untap': bool(untap_cost),
         }
 
     @staticmethod
@@ -94,44 +85,31 @@ class OracleTextParser:
 
     @staticmethod
     def is_token_nounish(token):
-        return True if token.pos_ == "NOUN" or \
-                       token.pos_ == "-PRON-" or \
-                        token.pos_ == "PROPN" \
-            else False
+        return token.pos_ in ['NOUN', '-PRON-', 'PROPN']
 
     @staticmethod
     def is_token_interesting(token):
         DEBUG("checking if token is interesting: " + token.text + " " + str(token.pos_))
-        return True if OracleTextParser.is_token_nounish(token) or \
-                token.pos_.count('ADJ') or \
-                token.pos_.count('VERB') or \
-                token.pos_.count('ADV') or \
-                token.pos_.count('ADP') \
-            else False
+        return OracleTextParser.is_token_nounish(token) or token.pos_ in ['ADJ', 'VERB', 'ADV', 'ADP']
 
     @staticmethod
-    def classify_effect_tokens(effect_tokens):
+    def classify_effect_tokens(effect):
         DEBUG('classifying effect tokens')
         # build bigrams
         bigrams = []
-        for first_token_index in range(len(effect_tokens)):
-            first_token = effect_tokens[first_token_index]
-            if OracleTextParser.is_token_interesting(first_token):
-                bigram = first_token.text
-                for second_token_index in range(first_token_index + 1, len(effect_tokens)):
-                    second_token = effect_tokens[second_token_index]
-                    if OracleTextParser.is_token_interesting(second_token):
-                        bigram += ' ' + second_token.text
-                        bigrams.append(bigram)
-                        break
+        # remove uninteresting tokens
+        effect_tokens = [et for et in effect if OracleTextParser.is_token_interesting(et)]
+        # take the list of two consecutive elements
+        bigrams = list(map(list, zip(effect_tokens, effect_tokens[1:])))
+        bigrams = ['{} {}'.format(bg[0], bg[1]) for bg in bigrams]
 
         return {
             'bigrams': bigrams,
-            'effect': effect_tokens,
-            'tokens': [w.text for w in effect_tokens],
-            'nouns': [w.text for w in effect_tokens if OracleTextParser.is_token_nounish(w)],
-            'verbs': [w.text for w in effect_tokens if w.pos_ == "VERB"],
-            'phrases': [phrase.text for phrase in effect_tokens.noun_chunks],
+            'effect': effect,
+            'tokens': [w.text for w in effect],
+            'nouns': [w.text for w in effect if OracleTextParser.is_token_nounish(w)],
+            'verbs': [w.text for w in effect if w.pos_ == "VERB"],
+            'phrases': [phrase.text for phrase in effect.noun_chunks],
         }
 
     @staticmethod

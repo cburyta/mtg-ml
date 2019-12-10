@@ -1,6 +1,8 @@
 from unittest import TestCase
 from nlp.oracle_text_parser import OracleTextParser
+from pprint import PrettyPrinter
 
+pp = PrettyPrinter()
 
 class TestOracleTextParser(TestCase):
     def test_get_action_list_from_raw_card_text(self):
@@ -115,7 +117,6 @@ class TestOracleTextParser(TestCase):
 
         normalized_effect = OracleTextParser.get_normalized_effect(test_effect)
 
-        print(str(normalized_effect))
         self.assertEqual(['Reveal top', 'top cards', 'cards of', 'of library', 'library Put', 'Put creature', 'creature cards', 'cards revealed', 'revealed way', 'way into', 'into hand', 'hand rest', 'rest on', 'on bottom', 'bottom of', 'of library', 'library in', 'in order'], normalized_effect['bigrams'])
         self.assertEqual(['cards', 'library', 'creature', 'cards', 'way', 'hand', 'rest', 'bottom', 'library', 'order'], normalized_effect['nouns'])
         self.assertEqual(['Reveal', 'Put', 'revealed'], normalized_effect['verbs'])
@@ -128,6 +129,7 @@ class TestOracleTextParser(TestCase):
         −7: You get an emblem with \"\"{T}: you may search your library for a creature card, put it onto the battlefield, then shuffle your library.\"\""""
 
         parsed_card = OracleTextParser.parse_oracle_text(oracle_text)
+        pp.pprint(parsed_card)
 
         self.assertEqual(3, len(parsed_card))
         self.assertIn('cost', parsed_card[0])
