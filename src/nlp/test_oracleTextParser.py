@@ -132,5 +132,17 @@ class TestOracleTextParser(TestCase):
         self.assertEqual(['the top five cards', 'your library', 'all creature cards', 'this way', 'your hand', 'the rest', 'the bottom', 'your library', 'any order'], normalized_effect['phrases'])
         self.assertEqual(['Reveal', 'the', 'top', 'five', 'cards', 'of', 'your', 'library', '.', 'Put', 'all', 'creature', 'cards', 'revealed', 'this', 'way', 'into', 'your', 'hand', 'and', 'the', 'rest', 'on', 'the', 'bottom', 'of', 'your', 'library', 'in', 'any', 'order', '.'], normalized_effect['tokens'])
 
-   # def test_basic_card_text_parser(self):
-   #     self.fail()
+    def test_basic_card_text_parser(self):
+        oracle_text = """{2}{B}{R}, {T}, Sacrifice Corpus Hauler: Reveal the top five cards of your library. Put all creature cards revealed this way into your hand and the rest on the bottom of your library in any order. 
+        {3}{C}, Exile a creature card from your graveyard: You may put a green creature card from your hand onto the battlefield. 
+        −7: You get an emblem with \"\"{T}: you may search your library for a creature card, put it onto the battlefield, then shuffle your library.\"\""""
+
+        parsed_card = OracleTextParser.parse_oracle_text(oracle_text)
+
+        self.assertEqual(3, len(parsed_card))
+        self.assertIn('cost', parsed_card[0])
+        self.assertIn('effect', parsed_card[0])
+        self.assertIn('cost', parsed_card[1])
+        self.assertIn('effect', parsed_card[1])
+        self.assertIn('cost', parsed_card[2])
+        self.assertIn('effect', parsed_card[2])

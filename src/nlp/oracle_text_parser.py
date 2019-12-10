@@ -130,7 +130,7 @@ class OracleTextParser:
         }
 
     @staticmethod
-    def basic_card_text_parser(raw_card_text):
+    def parse_oracle_text(raw_card_text):
         # test_preprocessed_card_text_is_separated_into_actions
         action_list = OracleTextParser.get_action_list_from_raw_card_text(raw_card_text)
         results = []
