@@ -62,14 +62,13 @@ class TestOracleTextParser(TestCase):
              "generic": 0,
              "white": 0,
              "green": 0,
-             "life": 0,
-             "discard": 0,
-             "loyalty": -7,
-             "sacrifice": 0,
-             "additional": False,
+             "life": False,
+             "discard": False,
+             "hybrid": False,
+             "loyalty": True,
+             "sacrifice": False,
              "tap": False,
              "untap": False,
-             "alternative_cost": False
          }, normalized_cost)
 
     def test_get_normalized_costs_complex(self):
@@ -88,14 +87,13 @@ class TestOracleTextParser(TestCase):
             "generic": 2,
             "white": 0,
             "green": 0,
-            "life": 0,
-            "discard": 0,
-            "loyalty": 0,
+            "life": False,
+            "discard": False,
+            "loyalty": False,
+            "hybrid": False,
             "sacrifice": 1,
-            "additional": False,
             "tap": True,
             "untap": False,
-            "alternative_cost": False
         }, normalized_cost)
 
     def test_get_normalized_cost_hybrid(self):
@@ -106,38 +104,33 @@ class TestOracleTextParser(TestCase):
 
         # assert extracted cost format
         self.assertEqual({
-            "red": 6,
+            "red": 0,
             "blue": 0,
             "black": 0,
             "colorless": 0,
             "generic": 0,
-            "white": 6,
+            "white": 0,
             "green": 0,
-            "life": 0,
-            "discard": 0,
-            "loyalty": 0,
-            "sacrifice": 1,
-            "additional": False,
+            "life": False,
+            "discard": False,
+            "loyalty": False,
+            "sacrifice": False,
             "hybrid": True,
-            "tap": True,
-            "untap": False,
-            "alternative_cost": False
+            "tap": False,
+            "untap": False
         }, normalized_cost)
 
     def test_get_normalized_effect(self):
-        test_effect = ""
+        test_effect = "Reveal the top five cards of your library. Put all creature cards revealed this way into your hand and the rest on the bottom of your library in any order."
 
         normalized_effect = OracleTextParser.get_normalized_effect(test_effect)
 
-        self.assertEqual({
-             'tokens': [],
-             'nouns': [],
-             'verbs': [],
-             'phrases': [],
-             '1-grams': [],
-             '2-grams': [],
-             '3-grams': []
-        }, normalized_effect)
+        print(str(normalized_effect))
+        self.assertEqual(['Reveal top', 'top cards', 'cards of', 'of library', 'library Put', 'Put creature', 'creature cards', 'cards revealed', 'revealed way', 'way into', 'into hand', 'hand rest', 'rest on', 'on bottom', 'bottom of', 'of library', 'library in', 'in order'], normalized_effect['bigrams'])
+        self.assertEqual(['cards', 'library', 'creature', 'cards', 'way', 'hand', 'rest', 'bottom', 'library', 'order'], normalized_effect['nouns'])
+        self.assertEqual(['Reveal', 'Put', 'revealed'], normalized_effect['verbs'])
+        self.assertEqual(['the top five cards', 'your library', 'all creature cards', 'this way', 'your hand', 'the rest', 'the bottom', 'your library', 'any order'], normalized_effect['phrases'])
+        self.assertEqual(['Reveal', 'the', 'top', 'five', 'cards', 'of', 'your', 'library', '.', 'Put', 'all', 'creature', 'cards', 'revealed', 'this', 'way', 'into', 'your', 'hand', 'and', 'the', 'rest', 'on', 'the', 'bottom', 'of', 'your', 'library', 'in', 'any', 'order', '.'], normalized_effect['tokens'])
 
    # def test_basic_card_text_parser(self):
    #     self.fail()
