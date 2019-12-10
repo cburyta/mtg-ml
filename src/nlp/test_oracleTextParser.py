@@ -36,16 +36,6 @@ class TestOracleTextParser(TestCase):
         self.assertEqual(cost, '−7')
         self.assertEqual(effect, 'You get an emblem with \"\"{T}: you may search your library for a creature card, put it onto the battlefield, then shuffle your library.')
 
-    def test_get_normalized_tokens(self):
-        # setup test string
-        test_string = "You get an emblem with \"\"Swamps you control have '{T}: Add {B}{B}{B}{B}.'\"\""
-
-        # run tokenization
-        tokenized = OracleTextParser.get_normalized_tokens(test_string)
-
-        # assert that we get back a list of tokens
-        self.assertEquals(["you", "get", "an", "emblem", "with", "swamps", "you", "control", "have", "{t}:", "add", "{b}{b}{b}{b}"], tokenized)
-
     def test_get_normalized_cost(self):
          # setup test string
          test_cost = "−7"
@@ -91,7 +81,7 @@ class TestOracleTextParser(TestCase):
             "discard": False,
             "loyalty": False,
             "hybrid": False,
-            "sacrifice": 1,
+            "sacrifice": True,
             "tap": True,
             "untap": False,
         }, normalized_cost)

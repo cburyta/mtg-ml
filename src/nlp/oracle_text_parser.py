@@ -1,11 +1,13 @@
 import spacy
+from DEBUG import DEBUG
+
 
 class OracleTextParser:
     parser = spacy.load("en_core_web_sm")
     @staticmethod
     def get_cost_and_effect_from_action(action):
         cost_effect_parts = action.split(':')
-        print(str(cost_effect_parts[0]))
+        DEBUG(cost_effect_parts[0])
         return cost_effect_parts[0].strip(' '), ':'.join(cost_effect_parts[1:]).strip(' ')
 
     @staticmethod
@@ -38,9 +40,12 @@ class OracleTextParser:
         tap_cost = False
         untap_cost = False
 
+        cost_tokens = [cost_token.text for cost_token in cost_tokens]
+        cost_tokens = ''.join(cost_tokens)
+        cost_tokens = cost_tokens.split(' ')
         for token in cost_tokens:
-            print(token.text, token.lemma_, token.pos_, token.tag_, token.dep_, token.shape_, token.is_alpha, token.is_stop)
-            token = token.text.lower()
+            print(token, token.count('{2}'))
+            token = token.lower()
             red_cost += token.count('{r}')
             blue_cost += token.count('{u}')
             black_cost += token.count('{b}')
@@ -96,7 +101,7 @@ class OracleTextParser:
 
     @staticmethod
     def is_token_interesting(token):
-        print("checking if token is interesting: " + token.text + " " + str(token.pos_))
+        DEBUG("checking if token is interesting: " + token.text + " " + str(token.pos_))
         return True if OracleTextParser.is_token_nounish(token) or \
                 token.pos_.count('ADJ') or \
                 token.pos_.count('VERB') or \
@@ -106,7 +111,7 @@ class OracleTextParser:
 
     @staticmethod
     def classify_effect_tokens(effect_tokens):
-        print('classifying effect tokens')
+        DEBUG('classifying effect tokens')
         # build bigrams
         bigrams = []
         for first_token_index in range(len(effect_tokens)):
