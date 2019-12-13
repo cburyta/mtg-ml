@@ -6,6 +6,8 @@ Uses Knex as a tool to setup schema with `knex migrate`. Use `knex seed` scripts
 
 Run the seed script to download and insert data into Postgres.
 
+*NOTE: This will take a long time, there are over 230,000 cards*
+
 ```
 docker-compose build
 docker-compose run --rm db-util yarn initialize
