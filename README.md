@@ -7,6 +7,7 @@ Uses Knex as a tool to setup schema with `knex migrate`. Use `knex seed` scripts
 Run the seed script to download and insert data into Postgres.
 
 ```
+docker-compose build
 docker-compose run --rm db-util yarn initialize
 ```
 
