@@ -7,6 +7,8 @@ class OracleTextParser:
     @staticmethod
     def get_cost_and_effect_from_action(action):
         cost_effect_parts = action.split(':')
+        if (len(cost_effect_parts) == 1):
+            cost_effect_parts = ['', cost_effect_parts[0]]
         DEBUG(cost_effect_parts[0])
         return cost_effect_parts[0].strip(' '), ':'.join(cost_effect_parts[1:]).strip(' ')
 

@@ -20,6 +20,15 @@ class TestOracleTextParser(TestCase):
         self.assertEqual('{3}{C}, Exile a creature card from your graveyard: You may put a green creature card from your hand onto the battlefield.', separated[1]),
         self.assertEqual('−7: You get an emblem with \"\"{T}: you may search your library for a creature card, put it onto the battlefield, then shuffle your library.\"\"', separated[2])
 
+    def test_get_cost_and_effect_from_action_with_no_cost(self):
+        test_action = 'Reveal the top five cards of your library. Put all creature cards revealed this way into your hand and the rest on the bottom of your library in any order.'
+        cost_effect_tuple = OracleTextParser.get_cost_and_effect_from_action(test_action)
+        cost = cost_effect_tuple[0]
+        effect = cost_effect_tuple[1]
+
+        self.assertEqual('', cost)
+        self.assertEqual('Reveal the top five cards of your library. Put all creature cards revealed this way into your hand and the rest on the bottom of your library in any order.', effect)
+
     def test_get_cost_and_effect_from_action(self):
         test_action = '{2}{B}{R}, {T}, Sacrifice Corpus Hauler: Reveal the top five cards of your library. Put all creature cards revealed this way into your hand and the rest on the bottom of your library in any order.'
         cost_effect_tuple = OracleTextParser.get_cost_and_effect_from_action(test_action)
