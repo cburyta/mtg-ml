@@ -56,7 +56,10 @@ exports.seed = async function(knex) {
     // implementation
 
     function logValue(card) {
-      logger.info('logValue', { tag: tag.name, card: card.name });
+      logger.info('logValue', {
+        tag: tag.name,
+        card: card.oracle_id
+      });
       return card
     }
 
@@ -64,11 +67,15 @@ exports.seed = async function(knex) {
       return value
     }
 
-    async function findOracleId({name}) {
-       return await knex('cards')
-          .where({ name })
-          .distinct('name', 'oracle_id')
-          .first();
+    async function findOracleId(card) {
+      if (_.has(card, 'oracle_id')) {
+        return card
+      }
+
+      return await knex('cards')
+        .where({ name: card.name })
+        .distinct('name', 'oracle_id')
+        .first();
     }
 
     async function tagCard(card) {
