@@ -26,6 +26,7 @@ exports.seed = async function(knex) {
   // get known tags
   const tags = await knex('tags').select('id', 'name').returning('*');
 
+  console.log('tagging cards...')
   // foreach tag...
   _.each(tags, (tag) => {
     const readPath = path.resolve('/opt/data/cards-tags/', `${tag.name}.csv`);
