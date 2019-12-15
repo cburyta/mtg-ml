@@ -17,14 +17,14 @@ exports.seed = async function() {
   }
 
   const writer = fs.createWriteStream(writePath);
-  console.log("Fetching scryfall-all-cards.json")
+  logger.info("Fetching scryfall-all-cards.json")
   const response = await axios({
     url,
     method: 'get',
     responseType: 'stream'
   });
 
-  console.log("writing out scryfall-all-cards.json")
+  logger.info("writing out scryfall-all-cards.json")
   response.data.pipe(writer);
 
   return new Promise((resolve, reject) => {

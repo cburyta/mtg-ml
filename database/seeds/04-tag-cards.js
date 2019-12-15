@@ -19,6 +19,9 @@ const logger = require('../utils/logger');
 
 exports.seed = async function(knex) {
   const tagPromises = [];
+  let counter = 0;
+  let inserted = 0;
+  let failed = 0;
 
   // Deletes ALL existing entries
   await knex.raw('TRUNCATE TABLE ?? RESTART IDENTITY CASCADE', 'cards_tags');
@@ -26,7 +29,7 @@ exports.seed = async function(knex) {
   // get known tags
   const tags = await knex('tags').select('id', 'name').returning('*');
 
-  console.log('tagging cards...')
+  logger.info('tagging cards...')
   // foreach tag...
   _.each(tags, (tag) => {
     const readPath = path.resolve('/opt/data/cards-tags/', `${tag.name}.csv`);
@@ -57,10 +60,6 @@ exports.seed = async function(knex) {
     // implementation
 
     function logValue(card) {
-      logger.info('logValue', {
-        tag: tag.name,
-        card: card.oracle_id
-      });
       return card
     }
 
@@ -85,10 +84,21 @@ exports.seed = async function(knex) {
         oracle_id: card.oracle_id
       };
 
-      return knex('cards_tags').insert(insert);
+      ++counter;
+
+      return knex('cards_tags')
+        .insert(insert)
+        .then(() => {
+          ++inserted;
+        })
+        .catch(() => {
+          ++failed;
+        });
     }
   });
 
   // add promise to the Each
-  return Promise.all(tagPromises);
+  return Promise.all(tagPromises).finally(() => {
+    logger.info('finished tagging cards', { counter, inserted, failed })
+  });
 };
