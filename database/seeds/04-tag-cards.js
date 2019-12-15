@@ -29,7 +29,8 @@ exports.seed = async function(knex) {
   // get known tags
   const tags = await knex('tags').select('id', 'name').returning('*');
 
-  logger.info('tagging cards...')
+  logger.info('tagging cards...');
+
   // foreach tag...
   _.each(tags, (tag) => {
     const readPath = path.resolve('/opt/data/cards-tags/', `${tag.name}.csv`);
@@ -37,7 +38,7 @@ exports.seed = async function(knex) {
     // look for a file
     if (!fs.existsSync(readPath)) {
       logger.info(`no tagged cards found at ${readPath}`);
-      return false
+      return false;
     }
 
     // if file exists, crate a pipeline
@@ -60,16 +61,16 @@ exports.seed = async function(knex) {
     // implementation
 
     function logValue(card) {
-      return card
+      return card;
     }
 
     function extractValue({value}) {
-      return value
+      return value;
     }
 
     async function findOracleId(card) {
       if (_.has(card, 'oracle_id')) {
-        return card
+        return card;
       }
 
       return await knex('cards')
@@ -99,6 +100,6 @@ exports.seed = async function(knex) {
 
   // add promise to the Each
   return Promise.all(tagPromises).finally(() => {
-    logger.info('finished tagging cards', { counter, inserted, failed })
+    logger.info('finished tagging cards', { counter, inserted, failed });
   });
 };
