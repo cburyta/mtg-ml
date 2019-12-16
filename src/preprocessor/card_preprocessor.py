@@ -37,9 +37,8 @@ class CardProcessorProcess(Process):
 
     def run(self):
         cards = self.cards
-        self.info('Extracting cost and effect from each card and writing to db')
         for card_index in range(len(cards)):
-            if card_index % 100 == 0: # throttle progress report from thread
+            if card_index is not 0 and card_index % 100 == 0: # throttle progress report from thread
                 self.info(f'{math.floor((card_index / 1000) * 100)}%')
             card = cards[card_index]
             self.parse_and_save_card_in_db(card)
@@ -56,14 +55,15 @@ class CardOracleTextProcessor:
         self.offset = 0
 
     def get_all_cards_from_db(self):
+        print(f"Pulling cards {self.offset * self.batchsize} to {(self.offset+1) * self.batchsize} for batch #{self.offset}")
         return self.db.all(f"select id,oracle_text from cards where exists( select 1 from jsonb_each_text(cards.legalities) j where j.value not like '%not_legal%') and lang='en' limit {self.batchsize}")
 
     def get_all_cards_from_db_with_offset(self):
-        return self.db.all(f"select id,oracle_text from cards where exists( select 1 from jsonb_each_text(cards.legalities) j where j.value not like '%not_legal%') and lang='en' limit {self.batchsize} offset {self.offset}")
+        print(f"Pulling cards {self.offset * self.batchsize} to {(self.offset+1) * self.batchsize} for batch #{self.offset}")
+        return self.db.all(f"select id,oracle_text from cards where exists( select 1 from jsonb_each_text(cards.legalities) j where j.value not like '%not_legal%') and lang='en' limit {self.batchsize} offset {self.offset * self.batchsize}")
 
     def limit_processes(self):
         if len(self.processors) % self.processor_limit == 0:
-            print('waiting for processing jobs to finish')
             for processor in self.processors:
                 processor.join()
                 print(f'{processor.name} finished.')
@@ -77,13 +77,10 @@ class CardOracleTextProcessor:
         return card_preprocessor
 
     def process_all_cards(self):
-        print(f"Pulling first batch of {self.batchsize} cards from database")
         cards = self.get_all_cards_from_db()
 
         while len(cards):
             self.offset += 1
             self.limit_processes()
-            print('setting up card processing thread')
             self.setup_and_start_card_processor_process(cards)
-            print(f"Pulling next 1000 cards (batch #{self.offset})")
             cards = self.get_all_cards_from_db_with_offset()
