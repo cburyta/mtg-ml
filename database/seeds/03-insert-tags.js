@@ -22,9 +22,11 @@ exports.seed = async function(knex) {
   let failed = 0;
 
   // Deletes ALL existing entries
+  logger.info('truncating tags table...');
   await knex.raw('TRUNCATE TABLE ?? RESTART IDENTITY CASCADE', 'tags');
 
   // start a process to read a data file with cards, clean and insert
+  logger.info('read clean and insert tags...');
   const pipeline = chain([
     fs.createReadStream(readPath),
     parser(),
@@ -35,16 +37,16 @@ exports.seed = async function(knex) {
   ]);
 
   pipeline.on('end', () => {
-    console.info('info: create tags end', { counter, inserted, failed })
+    logger.info('info: create tags end', { counter, inserted, failed });
   });
 
-  return streamToPromise(pipeline)
+  return streamToPromise(pipeline);
 
   // implementation
 
   // extracts the value key from the csv parser object
   function extractValue({value}) {
-    return value
+    return value;
   }
 
   function insertTag(value) {

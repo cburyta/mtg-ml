@@ -19,12 +19,17 @@ const logger = require('../utils/logger');
 
 exports.seed = async function(knex) {
   const tagPromises = [];
+  let counter = 0;
+  let inserted = 0;
+  let failed = 0;
 
   // Deletes ALL existing entries
   await knex.raw('TRUNCATE TABLE ?? RESTART IDENTITY CASCADE', 'cards_tags');
 
   // get known tags
   const tags = await knex('tags').select('id', 'name').returning('*');
+
+  logger.info('tagging cards...');
 
   // foreach tag...
   _.each(tags, (tag) => {
@@ -33,7 +38,7 @@ exports.seed = async function(knex) {
     // look for a file
     if (!fs.existsSync(readPath)) {
       logger.info(`no tagged cards found at ${readPath}`);
-      return false
+      return false;
     }
 
     // if file exists, crate a pipeline
@@ -56,19 +61,22 @@ exports.seed = async function(knex) {
     // implementation
 
     function logValue(card) {
-      logger.info('logValue', { tag: tag.name, card: card.name });
-      return card
+      return card;
     }
 
     function extractValue({value}) {
-      return value
+      return value;
     }
 
-    async function findOracleId({name}) {
-       return await knex('cards')
-          .where({ name })
-          .distinct('name', 'oracle_id')
-          .first();
+    async function findOracleId(card) {
+      if (_.has(card, 'oracle_id')) {
+        return card;
+      }
+
+      return await knex('cards')
+        .where({ name: card.name })
+        .distinct('name', 'oracle_id')
+        .first();
     }
 
     async function tagCard(card) {
@@ -77,10 +85,21 @@ exports.seed = async function(knex) {
         oracle_id: card.oracle_id
       };
 
-      return knex('cards_tags').insert(insert);
+      ++counter;
+
+      return knex('cards_tags')
+        .insert(insert)
+        .then(() => {
+          ++inserted;
+        })
+        .catch(() => {
+          ++failed;
+        });
     }
   });
 
   // add promise to the Each
-  return Promise.all(tagPromises);
+  return Promise.all(tagPromises).finally(() => {
+    logger.info('finished tagging cards', { counter, inserted, failed });
+  });
 };
