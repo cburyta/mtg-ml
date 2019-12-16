@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: mtg_pass
       POSTGRES_USER: mtg
       POSTGRES_DB: mtg_local
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
 
@@ -23,3 +25,5 @@ services:
       - /opt/app/node_modules
     environment:
       DB_CONNECTION_STRING: "postgres://mtg:mtg_pass@db:5432/mtg_local?charset=utf8"
+volumes:
+  postgres-data:
