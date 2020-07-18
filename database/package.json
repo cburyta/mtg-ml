@@ -20,7 +20,7 @@
     "config": "3.0.1",
     "dotenv": "6.2.0",
     "knex": "0.20.3",
-    "lodash": "4.17.14",
+    "lodash": "4.17.19",
     "objection": "1.4.0",
     "pg": "7.7.1",
     "stream-chain": "^2.2.1",
